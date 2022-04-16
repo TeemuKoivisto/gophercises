@@ -3,7 +3,9 @@ package deck
 
 import (
 	"fmt"
+	"math/rand"
 	"sort"
+	"time"
 )
 
 type CardRank uint8
@@ -54,14 +56,21 @@ func (c Card) String() string {
 	return fmt.Sprintf("%s of %ss", c.Rank.String(), c.Suit.String())
 }
 
-func New() []Card {
+func New(opts ...func([]Card) []Card) []Card {
 	var cards []Card
 	for _, suit := range suits {
 		for rank := minRank; rank <= maxRank; rank++ {
 			cards = append(cards, Card{Suit: suit, Rank: rank})
 		}
 	}
+	for _, opt := range opts {
+		cards = opt(cards)
+	}
 	return cards
+}
+
+func absRank(c Card) int {
+	return int(c.Suit)*int(maxRank) + int(c.Rank)
 }
 
 type BySuitAndRank []Card
@@ -70,11 +79,61 @@ func (a BySuitAndRank) Len() int           { return len(a) }
 func (a BySuitAndRank) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
 func (a BySuitAndRank) Less(i, j int) bool { return absRank(a[i]) < absRank(a[j]) }
 
-func absRank(c Card) int {
-	return int(c.Suit)*int(maxRank) + int(c.Rank)
+func Less(cards []Card) func(i, j int) bool {
+	return func(i, j int) bool {
+		return absRank(cards[i]) < absRank(cards[j])
+	}
+}
+
+func DefaultSort(cards []Card) []Card {
+	sort.Slice(cards, Less(cards))
+	return cards
 }
 
 func RegularSort(cards []Card) []Card {
 	sort.Sort(BySuitAndRank(cards))
 	return cards
+}
+
+func Shuffle(cards []Card) []Card {
+	ret := make([]Card, len(cards))
+	r := rand.New(rand.NewSource(time.Now().Unix()))
+	for i, j := range r.Perm(len(cards)) {
+		ret[i] = cards[j]
+	}
+	return ret
+}
+
+func Jokers(n int) func([]Card) []Card {
+	return func(cards []Card) []Card {
+		for i := 0; i < n; i++ {
+			cards = append(cards, Card{
+				Rank: CardRank(i),
+				Suit: Joker,
+			})
+		}
+		return cards
+	}
+}
+
+func Filter(f func(card Card) bool) func([]Card) []Card {
+	return func(cards []Card) []Card {
+		var ret []Card
+		for _, c := range cards {
+			if !f(c) {
+				ret = append(ret, c)
+			}
+		}
+		return ret
+	}
+}
+
+func Deck(n int) func([]Card) []Card {
+	return func(cards []Card) []Card {
+		var ret []Card
+		for i := 0; i < n; i++ {
+			ret = append(ret, cards...)
+		}
+		return ret
+	}
 }

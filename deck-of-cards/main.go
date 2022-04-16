@@ -7,6 +7,6 @@ import (
 
 func main() {
 	cards := deck.New()
-	cards = deck.RegularSort(cards)
+	cards = deck.Shuffle(cards)
 	fmt.Println(cards)
 }
