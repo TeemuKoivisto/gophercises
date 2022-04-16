@@ -8,20 +8,20 @@ import (
 
 func createDeck() []Card {
 	cards := make([]Card, 52)
-	suit, suits := DIAMOND, 4
+	suit, suits := Diamond, 4
 	for s := 0; s < suits; s++ {
 		for i := 0; i < 13; i++ {
 			cards[s*13+i] = Card{
-				number: i + 1,
-				suit:   suit,
+				Rank: CardRank(i + 1),
+				Suit: suit,
 			}
 		}
-		if suit == DIAMOND {
-			suit = CLUBS
-		} else if suit == CLUBS {
-			suit = HEARTS
-		} else if suit == HEARTS {
-			suit = SPADES
+		if suit == Diamond {
+			suit = Club
+		} else if suit == Club {
+			suit = Heart
+		} else if suit == Heart {
+			suit = Spade
 		}
 	}
 	return cards
@@ -31,7 +31,7 @@ type ByAge []Card
 
 func (a ByAge) Len() int           { return len(a) }
 func (a ByAge) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
-func (a ByAge) Less(i, j int) bool { return a[i].number < a[j].number }
+func (a ByAge) Less(i, j int) bool { return a[i].Rank < a[j].Rank }
 
 func main() {
 	cards := createDeck()
