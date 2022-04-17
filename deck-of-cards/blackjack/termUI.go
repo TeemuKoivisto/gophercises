@@ -9,6 +9,7 @@ func Play() {
 	game.setPlayer(HUMAN, "Bob")
 	game.setDealer(AI, "Janet")
 	game.startGame()
+	dealerAI := newDealerAI("Janet")
 	fmt.Println("### BLACKJACK ###")
 	running := true
 	for running {
@@ -18,8 +19,12 @@ func Play() {
 			PrintStatus(game)
 			input = PromptPlayerAction()
 		case DEALER_TURN:
-			// get ai move
-			game.endGame()
+			dealerMove := dealerAI.getAIMove(&game.state)
+			if dealerMove == "h" {
+				game.handleDealerHit()
+			} else {
+				game.endGame()
+			}
 		default:
 			running = false
 		}

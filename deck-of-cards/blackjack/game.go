@@ -102,15 +102,15 @@ func (g *Game) handlePlayerStand() {
 	}
 }
 
-// func (g *Game) handleDealerHit() {
-// 	card, cards := draw(g.cards)
-// 	g.state = GameState{
-// 		Status: DEALER_TURN,
-// 		PlayerCards: g.state.PlayerCards,
-// 		DealerCards: append(g.state.DealerCards, card),
-// 	}
-// 	g.cards = cards
-// }
+func (g *Game) handleDealerHit() {
+	card, cards := draw(g.cards)
+	g.state = GameState{
+		Status:      DEALER_TURN,
+		PlayerCards: g.state.PlayerCards,
+		DealerCards: append(g.state.DealerCards, card),
+	}
+	g.cards = cards
+}
 
 func (g *Game) endGame() {
 	pScore, dScore := g.state.PlayerCards.Score(), g.state.DealerCards.Score()
