@@ -13,8 +13,15 @@ func newPlayerAI(name string) *PlayerAI {
 }
 
 func (ai *PlayerAI) getAIMove(state *GameState) string {
-	pScore, dCard := state.PlayerCards.Score(), state.DealerCards[0].Rank
-	if pScore < 12 {
+	pScore, dCard, soft := state.PlayerCards.Score(), state.DealerCards[0].Rank, Soft(state.PlayerCards...)
+	if soft {
+		if pScore < 18 {
+			return "h"
+		} else if pScore == 18 && dCard >= 9 {
+			return "h"
+		}
+		return "s"
+	} else if pScore < 12 {
 		return "h"
 	} else if pScore == 12 {
 		if dCard == deck.Four || dCard == deck.Five || dCard == deck.Six {

@@ -5,7 +5,7 @@ import (
 )
 
 func Play() {
-	game := New()
+	game := New(GameOpts{})
 	game.setPlayer(HUMAN, "Bob")
 	game.setDealer(AI, "Janet")
 	game.startGame()

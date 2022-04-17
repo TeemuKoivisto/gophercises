@@ -11,8 +11,8 @@ func newDealerAI(name string) *DealerAI {
 }
 
 func (ai *DealerAI) getAIMove(state *GameState) string {
-	dScore := state.DealerCards.Score()
-	if dScore < 17 {
+	dScore := Score(state.DealerCards...)
+	if dScore <= 16 || (dScore == 17 && Soft(state.DealerCards...)) {
 		return "h"
 	} else {
 		return "s"

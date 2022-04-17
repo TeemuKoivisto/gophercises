@@ -1,12 +1,8 @@
 package blackjack
 
 import (
-	"strings"
-
 	"github.com/TeemuKoivisto/gophercises/deck-of-cards/deck"
 )
-
-type Hand []deck.Card
 
 type BlackJackStatus uint8
 
@@ -37,7 +33,7 @@ type GameState struct {
 	DealerCards Hand
 }
 
-type Options struct {
+type GameOpts struct {
 	decks int
 }
 
@@ -49,13 +45,17 @@ type Game struct {
 	dealer Player
 }
 
-func New() *Game {
+func New(opts GameOpts) *Game {
+	decks := opts.decks
+	if decks == 0 {
+		decks = 3
+	}
 	return &Game{
-		decks: 3,
+		decks: decks,
 		state: GameState{
 			Status: NOT_STARTED,
 		},
-		cards: deck.New(deck.Deck(3), deck.Shuffle),
+		cards: deck.New(deck.Deck(decks), deck.Shuffle),
 	}
 }
 
@@ -132,46 +132,6 @@ func (g *Game) endGame() {
 		PlayerCards: g.state.PlayerCards,
 		DealerCards: g.state.DealerCards,
 	}
-}
-
-func (h Hand) String() string {
-	strs := make([]string, len(h))
-	for i := range h {
-		strs[i] = h[i].String()
-	}
-	return strings.Join(strs, ", ")
-}
-
-func (h Hand) DealerString() string {
-	return h[0].String() + ", **HIDDEN**"
-}
-
-func (h Hand) Score() int {
-	minScore := h.MinScore()
-	if minScore > 11 {
-		return minScore
-	}
-	for _, c := range h {
-		if c.Rank == deck.Ace {
-			return minScore + 10
-		}
-	}
-	return minScore
-}
-
-func (h Hand) MinScore() int {
-	score := 0
-	for _, c := range h {
-		score += min(int(c.Rank), 10)
-	}
-	return score
-}
-
-func min(a, b int) int {
-	if a < b {
-		return a
-	}
-	return b
 }
 
 func draw(cards []deck.Card) (deck.Card, []deck.Card) {
