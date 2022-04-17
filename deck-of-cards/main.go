@@ -1,5 +1,7 @@
 package main
 
+import "github.com/TeemuKoivisto/gophercises/deck-of-cards/blackjack"
+
 func main() {
-	BlackJack()
+	blackjack.Play()
 }
