@@ -97,7 +97,7 @@ func RegularSort(cards []Card) []Card {
 
 func Shuffle(cards []Card) []Card {
 	ret := make([]Card, len(cards))
-	r := rand.New(rand.NewSource(time.Now().Unix()))
+	r := rand.New(rand.NewSource(time.Now().UnixNano()))
 	for i, j := range r.Perm(len(cards)) {
 		ret[i] = cards[j]
 	}

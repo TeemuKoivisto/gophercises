@@ -45,13 +45,13 @@ func Simulate() {
 	running := true
 	for running {
 		_, err = fmt.Scanf("%d", &input)
-		if err != nil {
-		} else {
+		if err == nil {
 			running = false
 		}
 	}
+	var result GameState
 	for i := 0; i < input; i++ {
-		result := RunGame()
+		result = RunGame()
 		if result.Status == PLAYER_WON {
 			wins += 1
 		} else if result.Status == DEALER_WON {
@@ -64,5 +64,5 @@ func Simulate() {
 	fmt.Println("Wins: ", wins)
 	fmt.Println("Losses: ", losses)
 	fmt.Println("Draws: ", draws)
-	fmt.Println("%", (wins+1)/(wins+losses+1)*100)
+	fmt.Println("%", float32(wins+1)/float32(wins+losses+1)*100)
 }
