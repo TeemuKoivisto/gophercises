@@ -9,6 +9,7 @@ func Play() {
 	game.setPlayer(HUMAN, "Bob")
 	game.setDealer(AI, "Janet")
 	game.startGame()
+	playerAI := newPlayerAI("Bob")
 	dealerAI := newDealerAI("Janet")
 	fmt.Println("### BLACKJACK ###")
 	running := true
@@ -17,7 +18,14 @@ func Play() {
 		switch game.state.Status {
 		case PLAYER_TURN:
 			PrintStatus(game)
-			input = PromptPlayerAction()
+			input = playerAI.getAIMove(&game.state)
+			// input = PromptPlayerAction()
+			switch input {
+			case "h":
+				game.handlePlayerHit()
+			case "s":
+				game.handlePlayerStand()
+			}
 		case DEALER_TURN:
 			dealerMove := dealerAI.getAIMove(&game.state)
 			if dealerMove == "h" {
@@ -27,12 +35,6 @@ func Play() {
 			}
 		default:
 			running = false
-		}
-		switch input {
-		case "h":
-			game.handlePlayerHit()
-		case "s":
-			game.handlePlayerStand()
 		}
 	}
 	PrintGameEnd(game)
